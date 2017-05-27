@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+  <display-name>FirstServlet</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+  <servlet>
+    <servlet-name>MyServlet</servlet-name>
+    <servlet-class>MyServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>Upload</servlet-name>
+    <servlet-class>UploadSevlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>Retrieve</servlet-name>
+    <servlet-class>RetrieveServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>MyServlet</servlet-name>
+    <url-pattern>/MyServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>Upload</servlet-name>
+    <url-pattern>/Upload</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>Retrieve</servlet-name>
+    <url-pattern>/Retrieve</url-pattern>
+  </servlet-mapping>
+</web-app>

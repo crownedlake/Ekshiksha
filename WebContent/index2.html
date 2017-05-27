@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="shortcut icon" type="image/x-icon" href="https://production-assets.codepen.io/assets/favicon/favicon-8ea04875e70c4b0bb41da869e81236e54394d63638a1ef12fa558a4a835f1164.ico" />
+  <link rel="mask-icon" type="" href="https://production-assets.codepen.io/assets/favicon/logo-pin-f2d2b6d2c61838f7e76325261b7195c27224080bc099486ddd6dccb469b8e8e6.svg" />
+  
+  
+  
+  
+  <title>PhysicsEkshiksha</title>
+  
+  
+  
+  <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/css/bootstrap.min.css'>
+<style>
+      .main-head {
+    font-size: 44px;
+    padding: 17%;
+    background-image: url('https://cdn.kastatic.org/images/homepage/mountains.svg');
+    color: whitesmoke;
+    margin: -2%;
+    font-weight: bold;
+    text-align: right;
+}
+.cat-main {
+    padding-top: 5%;
+    padding-bottom: 5%;
+  
+    margin-top: 2%;
+    font-size: 30px;
+    margin-left: -2%;
+    padding-left: 15%;
+}
+.cat-main > img {
+    border-radius: 50%;
+    padding-right: 8%;
+}
+[type="checkbox"], [type="radio"] {
+    transform: scale(1.5);
+}
+    </style>
+  
+  
+  
+  
+  
+</head>
+
+<body translate="no" >
+
+  <div class="main-ui">
+  <div class="main-head" >PHYSICS SIMULATOR</div>
+  <div class="cat-main"><img src="https://cdn.kastatic.org/genfiles/topic-icons/icons/science.png-945e6f-128c.png"></img>Categories</div>
+  <div class="row">
+  <div class="col-sm-1"></div>
+	<div class="categories col-sm-3"></div>
+ 
+
+
+
+<div class="col-sm-3">
+<div class="objects container">
+  
+</div>
+</div>
+  <div class="attr col-sm-3"></div>
+
+</div>
+</div>
+  
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+
+    <script>
+var selectedCategory;
+var opt = [];
+var objects = [];
+var attr = [];
+var data_cat = "";
+var data_obj = "";
+var data_attr = "";
+var dataLoader = function(cat) {
+  selectedCategory = cat;
+  console.log(selectedCategory);
+   $(".categories").hide();
+  $(".cat-main").html(selectedCategory);
+ 
+  /* ajax call for objects */
+
+  $.ajax({
+    type: "GET",
+    url: "MyServlet?category=" + selectedCategory +"&&object=",
+    success: function(response) {
+      objects = response.split(",");
+      data_obj = "<div >Objects</div><ul class='nav nav-pills nav-stacked' role='tablist'>";
+      for (obj1 in objects)
+        data_obj +=
+          '<li><input type="radio"  name="objects" value=' +
+          objects[obj1] +
+          ">" +
+          objects[obj1] +
+          "</input>";
+		  data_obj +="</ul>";
+      $(".objects").html(data_obj);
+
+      $(".objects").on("click", function() {
+        /* ajax call for objects */
+        selectedObject = this.value;
+        $.ajax({
+          type: "GET",
+          url: "MyServlet?category=&&object=" + selectedObject,
+          success: function(response) {
+            attr = response.split(",");
+            data_attr = "<div >Attributes</div><form>";
+			var n=0;
+            for (obj2 in attr)
+              data_attr +=
+                "<input type='text'  name='"+ attr[obj2] +"'>" + attr[obj2] + "</input><br><br>";
+            data_attr += "<input type='button' onclick=addFunc() value='Add'></input></form>";
+            $(".attr").html(data_attr);
+          }
+        });
+        /* response will be saved to data_attr*/
+      });
+    }
+  });
+
+  /* response will be saved to data_obj*/
+};
+var addFunc = function() {
+  /* ajax request to add data into db */
+  $.ajax({
+          type: "POST",
+          url: "Upload",
+		  data:{
+			'category':selectedCategory,
+			'object':selectedObject,
+			'val':$('.attr>form').serialize()
+		  },
+		  error : function(){
+		      alert("Error Occured");
+		   },
+          success: function(response) {
+			  dataLoader();
+			  $(".attr").html("");
+			  $(".cat-main").html(selectedCategory);
+			 	$(".categories").hide();
+		  }
+  /**/
+  
+});
+};
+
+$.ajax({
+  url: "MyServlet?category=&&object=",
+  datatype:"json",
+  error : function(){
+      alert("Error Occured");
+   },
+  success: function(response) {
+    opt = response.split(",");
+    
+    for (obj in opt)
+      data_cat +=
+        '<button  id="categories" value=' +
+        opt[obj] +
+        'onclick=dataLoader("'+opt[obj]+'");><span class="cat-name">' +
+        opt[obj]+'</span></button></br>' ;
+    $(".categories").html(data_cat);
+    //$(".categories").on("click", dataLoader);
+    //document.getElementById("categories").addEventListener('click', dataLoader);
+  }
+});
+  </script>
+
+  
+  
+
+</body>
+</html>
+ 
